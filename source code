@@ -1,0 +1,66 @@
+for n in range(6):
+    
+ import pandas as pd
+ import numpy as np
+ import matplotlib.pyplot as plt
+ import matplotlib.patches as patches
+ import seaborn as sb #used for visulaization
+ from sklearn.datasets.samples_generator import (make_blobs,
+                                                make_circles,
+                                                make_moons)
+ 
+ from sklearn.cluster import KMeans, SpectralClustering
+ 
+
+ data= pd.read_csv('the_Banknote-authentication-dataset.csv')
+ df=data
+ #min= np.min(data,0)
+ #max= np.max(data,0)
+ #normed= (data-min)/(max-min)
+
+ mean= np.mean(data,0)
+ std_dev= np.std(data,0)
+
+
+ #ellipse= patches.Ellipse([mean[0],mean[1]],std_dev[0]*2,std_dev[1]*2,alpha=0.25)
+ #fig,graph= plt.subplots()
+
+ #graph.scatter(mean[0],mean[1])
+ #graph.add_patch(ellipse)
+ #graph.scatter(mean[0],mean[1])
+ #graph.add_patch(ellipse)
+
+ V1=data['V1']
+ V2=data['V2']
+
+ V1_V2= np.column_stack((V1,V2))
+ km_res= KMeans(n_clusters=2).fit(V1_V2)
+ clusters= km_res.cluster_centers_
+ data['KMeans'] = km_res.labels_
+
+
+ g = sb.FacetGrid( data=df,hue = 'KMeans', height = 5)
+
+ plt.scatter(V1,V2,alpha=0.5)
+ g.map(plt.scatter, 'V1', 'V2')
+ g.add_legend();
+ plt.scatter(clusters[:,0],clusters[:,1],s=500,marker='*',c='black')
+
+
+ plt.xlabel('variance V1')
+ plt.ylabel('skewness V2')
+    
+ print(km_res.cluster_centers_)
+ 
+df = pd.DataFrame({'V1' : V1, 'V2' : V2})
+print(df)
+
+#ct = pd.crosstab(df['V1'], df['V2'])
+#print(ct)
+#km_res.fit(data)
+#print(km_res.inertia_)
+
+cluster_labels = km_res.fit_predict(data)
+
+ 
+
